@@ -25,29 +25,39 @@ class DetailInfoActivity : AppCompatActivity() {
     }
 
     private fun updateUI(stationName: String?, sidoName: String?, pm10Value: Int, pm25Value: String?, dataTime: String?, coValue: String?, no2Value: String?, o3Value: String?, so2Value: String?) {
-
+        val textViewPm10Value: TextView = findViewById(R.id.textViewPm10Value)
         val textViewStationName: TextView = findViewById(R.id.textViewStationName)
         val textViewSidoName: TextView = findViewById(R.id.textViewSidoName)
-        val textViewPm10Value: TextView = findViewById(R.id.textViewPm10Value)
         val textViewPm25Value: TextView = findViewById(R.id.textViewPm25Value)
-//        val textViewDataTime: TextView = findViewById(R.id.textViewDataTime)
         val textViewCoValue: TextView = findViewById(R.id.textViewCoValue)
         val textViewNo2Value: TextView = findViewById(R.id.textViewNo2Value)
         val textViewO3Value: TextView = findViewById(R.id.textViewO3Value)
         val textViewSo2Value: TextView = findViewById(R.id.textViewSo2Value)
 
+        textViewStationName.text = stationName ?: "Unknown Station"
         when {
-            pm10Value <= 30 -> textViewPm10Value.setBackgroundColor(Color.GREEN)
-            pm10Value <= 80 -> textViewPm10Value.setBackgroundColor(Color.YELLOW)
-            pm10Value <= 150 -> textViewPm10Value.setBackgroundColor(Color.RED)
-            else -> textViewPm10Value.setBackgroundColor(Color.BLACK)
+            pm10Value <= 30 -> {
+                textViewStationName.setBackgroundColor(Color.GREEN)
+                textViewStationName.setTextColor(Color.BLACK)
+            }
+            pm10Value <= 80 -> {
+                textViewStationName.setBackgroundColor(Color.YELLOW)
+                textViewStationName.setTextColor(Color.BLACK)
+            }
+            pm10Value <= 150 -> {
+                textViewStationName.setBackgroundColor(Color.RED)
+                textViewStationName.setTextColor(Color.WHITE)
+            }
+            else -> {
+                textViewStationName.setBackgroundColor(Color.BLACK)
+                textViewStationName.setTextColor(Color.WHITE)
+            }
         }
 
         textViewStationName.text = "Station Name: $stationName"
         textViewSidoName.text = "City: $sidoName"
         textViewPm10Value.text = "PM10 Value: $pm10Value"
         textViewPm25Value.text = "PM2.5 Value: $pm25Value"
-//        textViewDataTime.text = "Data Time: $dataTime"
         textViewCoValue.text = "CO Value: $coValue"
         textViewNo2Value.text = "NO2 Value: $no2Value"
         textViewO3Value.text = "O3 Value: $o3Value"

@@ -41,6 +41,7 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.material:material:1.4.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
     // Retrofit2 라이브러리
     val retrofitVersion = "2.9.0"

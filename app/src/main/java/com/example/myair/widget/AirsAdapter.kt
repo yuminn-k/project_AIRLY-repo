@@ -28,7 +28,7 @@ class AirsAdapter(val listener:OnAirSelected): RecyclerView.Adapter<AirsAdapter.
     }
 
     fun updateData(airList: List<Item>) {
-        this.data.clear()  // 기존의 데이터를 모두 제거
+        this.data.clear()
         this.data.addAll(airList)
         notifyDataSetChanged()
     }

@@ -1,6 +1,7 @@
 package com.example.myair
 
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,6 +24,7 @@ class AirViewModel: ViewModel() {
                     if (response.isSuccessful) {
                         response.body()?.let {
                             val newAirs = it.response.body.items  // 새로운 아이템만 가져옴
+                            Log.d("AirViewModel", "New Airs: $newAirs") // Log 추가
                             if (isNewCity) {
                                 airs.postValue(newAirs)  // 새로운 도시가 선택된 경우 airs 갱신
                             } else {
