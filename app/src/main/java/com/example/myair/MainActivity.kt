@@ -21,7 +21,21 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.util.Locale
 import android.Manifest
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.net.Uri
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Log
+import android.widget.ImageView
+import android.widget.TextView
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.transition.TransitionManager
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: AirViewModel by viewModels()
@@ -57,6 +71,9 @@ class MainActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         val startButton: Button = findViewById(R.id.startButton)
         val refreshButtonLayout: RelativeLayout = findViewById(R.id.refreshButtonLayout)
+        val logo: ImageView = findViewById(R.id.logo)
+        val description: TextView = findViewById(R.id.description)
+        val constraintLayout: ConstraintLayout = findViewById(R.id.constraintLayout)
 
         val locationButton: Button = findViewById(R.id.locationButton)
         locationButton.setOnClickListener {
@@ -71,6 +88,21 @@ class MainActivity : AppCompatActivity() {
         }
 
         startButton.setOnClickListener {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+
+            constraintSet.clear(R.id.logo, ConstraintSet.BOTTOM)
+            constraintSet.connect(R.id.logo, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+
+            constraintSet.clear(R.id.description, ConstraintSet.BOTTOM)
+            constraintSet.connect(R.id.description, ConstraintSet.TOP, R.id.logo, ConstraintSet.BOTTOM)
+
+            constraintSet.clear(R.id.startButton, ConstraintSet.BOTTOM)
+            constraintSet.connect(R.id.startButton, ConstraintSet.TOP, R.id.description, ConstraintSet.BOTTOM)
+
+            TransitionManager.beginDelayedTransition(constraintLayout)
+            constraintSet.applyTo(constraintLayout)
+
             startButton.visibility = View.GONE
             findViewById<Spinner>(R.id.spinner).visibility = View.VISIBLE
             findViewById<RecyclerView>(R.id.recyclerView).visibility = View.VISIBLE
@@ -91,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedCity = parent.getItemAtPosition(position).toString()
-                if (selectedCity != previousCity || pageNo == 1) { // 초기 렌더링을 위한 조건 추가
+                if (selectedCity != previousCity || pageNo == 1) {
                     pageNo = 1
                     previousCity = selectedCity
                     viewModel.getAir(selectedCity, pageNo, 10, "json", "ppm6OJaHv0U7JZ4pVs+2+s7LnjIngOoils3jxGg5HjYA4xAB6X3zsl55Zkh80ELDfggU+Xi1hgC5kJTqATFk7g==", "1.0", true)
@@ -121,6 +153,22 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        val footerTextView: TextView = findViewById(R.id.footer)
+        footerTextView.movementMethod = LinkMovementMethod.getInstance()
+        val spannableString = SpannableString(footerTextView.text)
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                val url = "https://github.com/yuminn-k"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                startActivity(intent)
+            }
+        }
+
+        val start = footerTextView.text.indexOf("Github Link")
+        val end = start + "Github Link".length
+        spannableString.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        footerTextView.text = spannableString
 
         viewModel.airs.observe(this) { airList ->
             adapter.updateData(airList)
@@ -158,13 +206,11 @@ class MainActivity : AppCompatActivity() {
                 val geocoder = Geocoder(this, Locale.getDefault())
                 val addresses: List<Address>? = geocoder.getFromLocation(location.latitude, location.longitude, 1)
                 if (addresses != null && addresses.isNotEmpty()) {
-                    Log.d("MainActivity", "Full Address: ${addresses[0]}")
                     val adminArea: String = addresses[0].adminArea
                     val cityNames: List<String> = convertAddressToSearchKeyword(adminArea)
 
                     // 변환한 도시 이름으로 미세먼지 정보 요청
                     for (cityName in cityNames) {
-                        Log.d("MainActivity", "Search Keyword: $cityName")
                         viewModel.getAir(cityName, pageNo, 10, "json", "ppm6OJaHv0U7JZ4pVs+2+s7LnjIngOoils3jxGg5HjYA4xAB6X3zsl55Zkh80ELDfggU+Xi1hgC5kJTqATFk7g==", "1.0", true)
                     }
                 }

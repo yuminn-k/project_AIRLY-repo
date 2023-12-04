@@ -2,6 +2,7 @@ package com.example.myair
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.TypedValue
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -35,6 +36,9 @@ class DetailInfoActivity : AppCompatActivity() {
         val textViewSo2Value: TextView = findViewById(R.id.textViewSo2Value)
 
         textViewStationName.text = stationName ?: "Unknown Station"
+        textViewStationName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
+        textViewSidoName.text = "도시: $sidoName"
+        textViewSidoName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
         when {
             pm10Value <= 30 -> {
                 textViewStationName.setBackgroundColor(Color.GREEN)
@@ -54,13 +58,13 @@ class DetailInfoActivity : AppCompatActivity() {
             }
         }
 
-        textViewStationName.text = "Station Name: $stationName"
-        textViewSidoName.text = "City: $sidoName"
-        textViewPm10Value.text = "PM10 Value: $pm10Value"
-        textViewPm25Value.text = "PM2.5 Value: $pm25Value"
-        textViewCoValue.text = "CO Value: $coValue"
-        textViewNo2Value.text = "NO2 Value: $no2Value"
-        textViewO3Value.text = "O3 Value: $o3Value"
-        textViewSo2Value.text = "SO2 Value: $so2Value"
+        textViewStationName.text = "지역명: $stationName"
+        textViewSidoName.text = "도시: $sidoName"
+        textViewPm10Value.text = "PM10 값: $pm10Value"
+        textViewPm25Value.text = "PM2.5 값: $pm25Value"
+        textViewCoValue.text = "CO 값: $coValue"
+        textViewNo2Value.text = "NO2 값: $no2Value"
+        textViewO3Value.text = "O3 값: $o3Value"
+        textViewSo2Value.text = "SO2 값: $so2Value"
     }
 }
